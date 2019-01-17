@@ -1,20 +1,5 @@
-import pygame, random, math
-import cell as c
+import pygame
 from config import *
-
-colors_players = [(37, 7, 255), (35, 183, 253), (48, 254, 241), (19, 79, 251), (255, 7, 230), (255, 7, 23),
-                  (6, 254, 13)]
-
-def getDistance(pos1, pos2):
-    diffX = math.fabs(pos1.x - pos2.x)
-    diffY = math.fabs(pos1.y - pos2.y)
-
-    return ((diffX ** 2) + (diffY ** 2)) ** (0.5)
-
-# right, down, left, up
-dx = [1, 0, -1, 0]
-dy = [0, 1, 0, -1]
-
 
 class Pos:
     def __init__(self, x=0, y=0):
@@ -33,12 +18,12 @@ class Snake:
         self.dir = 0
         self.length = 1
         self.surface = surface
-        self.color = colors_players[random.randint(0, len(colors_players) - 1)]
+        self.color = getColor()
         self.name = name
         print(name, self.startX, self.startY)
 
-    def update(self, cell_list):
-        self.move()
+    def update(self, cell_list, enem_list):
+        self.move(cell_list, enem_list)
         self.collisionDetection(cell_list)
 
     def getTrunk(self):
@@ -47,23 +32,21 @@ class Snake:
     def crash(self, snakeList):
         for snake in snakeList:
             for pos in snake.getTrunk():
-                if getDistance(pos, self.head) < 10:
+                if getDistance(pos, self.head) < snake.width:
                     return True
 
         return self.head.x >= screen_width or self.head.x < 0 or self.head.y >= screen_height or self.head.y < 0
 
     def collisionDetection(self, cell_list):
         for cell in cell_list:
-            if (getDistance((cell), (self.head)) < 10):
+            if (getDistance((cell), (self.head)) < self.width):
                 self.length += 1
                 self.width += 0.05
                 cell_list.remove(cell)
-                cell = c.Cell(self.surface)
-                cell_list.append(cell)
                 return True
         return False
 
-    def move(self):
+    def move(self, cell_list=[], enem_list=[]):
         event = pygame.key.get_pressed()
         if (event[pygame.K_RIGHT]):
             self.dir = 0

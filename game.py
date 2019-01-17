@@ -1,6 +1,6 @@
 import pygame
 from snake import Snake
-from bot import SnakeBot1
+from bot import randomSnake, SnakeBot1, SnakeBot2, SnakeBot3, SnakeBot4
 from cell import Cell
 from config import *
 
@@ -15,7 +15,8 @@ clock = pygame.time.Clock()
 surface = pygame.display.set_mode((screen_width, screen_height))
 
 cell_list = list()
-bot_number = 3
+cell_count = 50
+bot_number = 8
 
 
 def spawn_cells(numOfCells):
@@ -29,13 +30,13 @@ def draw_grid():
         pygame.draw.line(surface, (230, 240, 240), (0, i), (screen_width, i), 3)
         pygame.draw.line(surface, (230, 240, 240), (i, 0), (i, screen_height), 3)
 
-blob = Snake(surface)
+blob = Snake(surface, "ME")
 snakeList = [blob]
 
 for i in range(0, bot_number):
-    snakeList.append(SnakeBot1(surface, "bot"+str(i+1)))
+    snakeList.append(randomSnake(surface, i))
 
-spawn_cells(50)
+spawn_cells(cell_count)
 gameover = False
 
 print("PLAY")
@@ -50,12 +51,13 @@ while not gameover:
             pygame.quit()
             quit()
     for snake in snakeList:
-        snake.update(cell_list)
+        snake.update(cell_list, snakeList)
 
     surface.fill((242, 251, 255))
     if blob.crash(snakeList[1:]):
         gameover = True
         print("gameover")
+
     tmp = snakeList[:]
     for i in range(1, bot_number):
         tmp = snakeList[:]
@@ -63,13 +65,19 @@ while not gameover:
 
         tmp.remove(snake)
         if snake.crash(tmp):
+            j = 0
             for c in snake.getTrunk():
-                cell_list.append(Cell(surface, c.x, c.y))
-            snakeList[i] = SnakeBot1(surface, "bot" + str(i))
+                if j % 3 == 0:
+                    cell_list.append(Cell(surface, c.x, c.y))
+                j+=1
+            snakeList[i] = randomSnake(surface, i)
         tmp = snakeList[:]
 
     # surface.fill((0,0,0))
     draw_grid()
+    while len(cell_list) < cell_count:
+        cell_list.append(Cell(surface))
+
     for c in cell_list:
         c.draw()
 

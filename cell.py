@@ -14,11 +14,7 @@ class Cell:
             self.y = y
         self.mass = 7
         self.surface = surface
-        self.color = colors_cells[random.randint(0, len(colors_cells) - 1)]
+        self.color = getColor()
 
     def draw(self):
         pygame.draw.circle(self.surface, self.color, (int(self.x), int(self.y)), self.mass)
-
-colors_cells = [(80, 252, 54), (36, 244, 255), (243, 31, 46), (4, 39, 243), (254, 6, 178), (255, 211, 7), (216, 6, 254),
-                (145, 255, 7), (7, 255, 182), (255, 6, 86), (147, 7, 255)]
-
