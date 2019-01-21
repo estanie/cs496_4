@@ -1,6 +1,6 @@
 import random, math
 
-SCREEN_WIDTH, SCREEN_HEIGHT = (500, 500)
+SCREEN_WIDTH, SCREEN_HEIGHT = (250, 250)
 
 # 내 주변 += 얼마만큼 넘길건지
 SEND_WIDTH, SEND_HEIGHT = (15, 15)

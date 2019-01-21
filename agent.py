@@ -6,7 +6,7 @@ from config import *
 import time
 
 # 최대 학습 횟수
-MAX_EPISODE = 10000000
+MAX_EPISODE = 1000000
 
 # 1000번 학습마다 타겟 네트워크 업데이트
 TARGET_UPDATE_INTERVAL = 1000
@@ -46,7 +46,6 @@ def train():
 
     # 게임 시작
     for episode in range(MAX_EPISODE):
-        print("게임을 시작하자...")
         terminal = False
         total_reward = 0
 

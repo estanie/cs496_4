@@ -27,7 +27,6 @@ class Game:
         self.total_game = 0
 
     def reset(self):
-        print("게임 초기화")
         """지렁이들, 셀 위치, 내 위치와 보상값 초기화."""
         self.current_reward = 0
         self.total_game += 1
@@ -126,7 +125,6 @@ class Game:
         TODO(gayeon): 여기 만들기..
         """
         state = np.zeros((SEND_WIDTH * 2, SEND_HEIGHT * 2))
-
         sx = self.snake_list[0].head.x - SEND_WIDTH
         sy = self.snake_list[0].head.y - SEND_HEIGHT
 
@@ -145,4 +143,13 @@ class Game:
                 x, y = (pos.x - sx, pos.y - sy)
                 if x < SEND_WIDTH * 2 and x >= 0 and y < SEND_HEIGHT * 2 and y >= 0:
                     state[x, y] = -1
+
+        if sx < 0:
+            for i in range(0, -sx):
+                for j in range(0, SEND_HEIGHT * 2):
+                    state[i, j] = -1
+        if sy < 0:
+            for j in range(0, -sy):
+                for i in range(0, SEND_HEIGHT * 2):
+                    state[i, j] = -1
         return state
