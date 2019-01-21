@@ -3,6 +3,7 @@ import numpy as np
 from model import DQN
 from game import Game
 from config import *
+import time
 
 # 최대 학습 횟수
 MAX_EPISODE = 10000000
@@ -10,8 +11,8 @@ MAX_EPISODE = 10000000
 # 1000번 학습마다 타겟 네트워크 업데이트
 TARGET_UPDATE_INTERVAL = 1000
 
-# 5프레임에 한 번 씩 학습
-TRAIN_INTERVAL = 5
+# 4프레임에 한 번 씩 학습
+TRAIN_INTERVAL = 4
 
 # 일정시간 이후 학습 시작.
 OBSERVE = 100
@@ -80,7 +81,6 @@ def train():
 
             time_step += 1
 
-        print('방향: ' + str(actions))
         print('게임 횟수: %d 점수: %d' % (episode + 1, total_reward))
 
         total_reward_list.append(total_reward)
@@ -116,7 +116,6 @@ def replay():
         while not terminal:
             action = brain.get_action()
             print(action)
-
             # 결정한 액션을 이용해 게임을 진행하고, 보상과 게임의 종료 여부를 받아옵니다.
             state, reward, terminal = game.step(action)
             total_reward += reward

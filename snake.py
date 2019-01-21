@@ -20,7 +20,7 @@ class Snake:
         self.color = getColor()
         self.name = name
 
-    def update(self, cell_list, enem_list, action=4):
+    def update(self, cell_list, enem_list, action=4, is_me=False):
         self.move(cell_list, enem_list, action)
         self.collisionDetection(cell_list)
 

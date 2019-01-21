@@ -45,18 +45,17 @@ class Game:
     def step(self, action=4):
         """게임 실행하는 부분."""
         if self.show_game:
-            self.clock.tick(100)
-
-        # 게임 종료할 건지 event 받는 부분.
-        # for e in pygame.event.get():
-        #     if e.type == pygame.KEYDOWN:
-        #         if e.key == pygame.K_ESCAPE:
-        #             pygame.quit()
-        #             quit()
-        #     if e.type == pygame.QUIT:
-        #         pygame.quit()
-        #         quit()
-
+            # 게임 종료할 건지 event 받는 부분.
+            # for e in pygame.event.get():
+            #     if e.type == pygame.KEYDOWN:
+            #         if e.key == pygame.K_ESCAPE:
+            #             pygame.quit()
+            #             quit()
+            #     if e.type == pygame.QUIT:
+            #         pygame.quit()
+            #         quit()
+            pass
+        my_previous_length = self.snake_list[0].length
         for snake in self.snake_list[1:]:
             snake.update(self.cell_list, self.snake_list)
 
@@ -73,7 +72,7 @@ class Game:
                     j += 1
                 self.snake_list[i] = randomSnake(self.surface, i)
 
-        self.snake_list[0].update(self.cell_list, self.snake_list, action)
+        self.snake_list[0].update(self.cell_list, self.snake_list, action, is_me=True)
         gameover = self.snake_list[0].crash(self.snake_list[1:])
 
         while len(self.cell_list) < CELL_COUNT:
@@ -83,10 +82,11 @@ class Game:
             self.draw()
 
         if gameover:
-            reward = -20
+            reward = -1
         else:
-            reward = self.snake_list[0].length
-            self.current_reward += reward
+            reward = self.snake_list[0].length - my_previous_length
+
+        self.current_reward += reward
 
         return self._get_state(), reward, gameover
 
@@ -126,23 +126,23 @@ class Game:
         TODO(gayeon): 여기 만들기..
         """
         state = np.zeros((SEND_WIDTH * 2, SEND_HEIGHT * 2))
-        head = self.snake_list[0].head
-        head.x = head.x - SEND_WIDTH
-        head.y = head.y - SEND_HEIGHT
+
+        sx = self.snake_list[0].head.x - SEND_WIDTH
+        sy = self.snake_list[0].head.y - SEND_HEIGHT
 
         for cell in self.cell_list:
-            x, y = (cell.x-head.x, cell.y-head.y)
+            x, y = (cell.x-sx, cell.y-sy)
             if x < SEND_WIDTH * 2 and x >= 0 and y < SEND_HEIGHT * 2 and y >= 0:
                 state[x, y] = 2
 
         for pos in self.snake_list[0].trunk:
-            x, y = (pos.x - head.x, pos.y - head.y)
+            x, y = (pos.x - sx, pos.y - sy)
             if x < SEND_WIDTH * 2 and x >= 0 and y < SEND_HEIGHT * 2 and y >= 0:
                 state[x, y] = 1
 
         for snake in self.snake_list[1:]:
             for pos in snake.trunk:
-                x, y = (pos.x - head.x, pos.y - head.y)
+                x, y = (pos.x - sx, pos.y - sy)
                 if x < SEND_WIDTH * 2 and x >= 0 and y < SEND_HEIGHT * 2 and y >= 0:
                     state[x, y] = -1
         return state
